@@ -32,7 +32,7 @@ set(TS_FILES OnlineBoard_zh_CN.ts)
 set(PROJECT_SOURCES
         main.cpp
         qml.qrc
-        ${TS_FILES}
+        #${TS_FILES}
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

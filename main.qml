@@ -54,6 +54,15 @@ ApplicationWindow {
                     drawer.close()
                 }
             }
+
+            ItemDelegate {
+                text: qsTr("Page 2")
+                width: parent.width
+                onClicked: {
+                    stackView.push("qml/PainterBoard.qml")
+                    drawer.close()
+                }
+            }
         }
     }
 
