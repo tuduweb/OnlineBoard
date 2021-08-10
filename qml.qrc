@@ -10,5 +10,9 @@
         <file>qml/PainterBoard.qml</file>
         <file>icons/danger.png</file>
         <file>icons/wrong.png</file>
+        <file>qml/index.qml</file>
+        <file>qml/PainterItem.qml</file>
+        <file>qml/ColorPicker.qml</file>
+        <file>qml/flickresize.qml</file>
     </qresource>
 </RCC>

@@ -1,8 +1,40 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QQmlContext>
+
+#include "painteditem.h"
+
+#if defined (ANDROID)
+#include <QtAndroidExtras/QtAndroidExtras>
+#include <QtAndroidExtras/QAndroidJniObject>
+#else
+#include <QBuffer>
+#endif
 
 #include <QLocale>
 #include <QTranslator>
+
+#include <QDebug>
+#include <QDir>
+
+#include <QImage>
+
+#if defined (ANDROID)
+bool checkPermission() {
+    QtAndroid::PermissionResult r = QtAndroid::checkPermission("android.permission.WRITE_EXTERNAL_STORAGE");
+    if(r == QtAndroid::PermissionResult::Denied) {
+        QtAndroid::requestPermissionsSync( QStringList() << "android.permission.WRITE_EXTERNAL_STORAGE" );
+        r = QtAndroid::checkPermission("android.permission.WRITE_EXTERNAL_STORAGE");
+        if(r == QtAndroid::PermissionResult::Denied) {
+             return false;
+        }
+   }
+   return true;
+}
+#endif
+
+
+QString currentPath;
 
 int main(int argc, char *argv[])
 {
@@ -29,7 +61,65 @@ int main(int argc, char *argv[])
         if (!obj && url == objUrl)
             QCoreApplication::exit(-1);
     }, Qt::QueuedConnection);
+
+
+
+
+    qDebug() << "path: "  << QDir::currentPath();
+    QImage image;
+    image.load(":/icons/danger.png");
+#if defined (ANDROID)
+    qDebug() << "Check Permision : " << checkPermission();
+
+    auto androidContext = QtAndroid::androidContext();
+
+    QAndroidJniObject dir = QAndroidJniObject::fromString(QString(""));
+
+    QAndroidJniObject path = androidContext.callObjectMethod("getExternalFilesDir",
+                                                             "(Ljava/lang/String;)Ljava/io/File;",
+                                                             dir.object());
+
+    qInfo() << "Path: " + path.toString();
+
+    QDir localDir(path.toString());
+
+    qInfo() << "dir is exsit : " << localDir.exists();
+    {
+        bool res = localDir.mkpath(path.toString() + "/hello/");
+        qInfo() << "mkpath : " << res;
+    }
+
+    qInfo() << "image infos : " << image.size();
+
+    bool res = image.save(path.toString() + "/danger.png");
+    qInfo() << "save res : " << res;
+
+    engine.rootContext()->setContextProperty("localUrl", path.toString());
+    currentPath = path.toString();
+#else
+    engine.rootContext()->setContextProperty("localUrl", QDir::currentPath());
+    currentPath = QDir::currentPath();
+#endif
+
+    QImage image2(50, 50, QImage::Format_RGB16);
+    image2.fill(QColor("red"));
+
+    QByteArray ba;
+    QBuffer buffer(&ba);
+    buffer.open(QIODevice::WriteOnly);
+    //bool res2 = image2.save(&buffer, "image/png");
+    bool res2 = image.save(&buffer, "image/png");
+    qInfo() << res2;
+    buffer.close();
+
+    qInfo() << QLatin1String("data:") + "image/png" + QLatin1String(";base64,") + QLatin1String(ba.toBase64().constData());
+
+    engine.rootContext()->setContextProperty("testImage", image2);
+
+    qmlRegisterType<PaintedItem>("an.qml.Controls", 1, 0, "APaintedItem");
+
     engine.load(url);
+
 
     return app.exec();
 }

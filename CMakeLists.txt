@@ -27,10 +27,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Quick LinguistTools REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick LinguistTools REQUIRED)
 
+if(ANDROID)
+    find_package(QT NAMES Qt6 Qt5 COMPONENTS AndroidExtras REQUIRED)
+    find_package(Qt${QT_VERSION_MAJOR} COMPONENTS AndroidExtras REQUIRED)
+endif()
+
 set(TS_FILES OnlineBoard_zh_CN.ts)
 
 set(PROJECT_SOURCES
         main.cpp
+        painteditem.h painteditem.cpp
         qml.qrc
         #${TS_FILES}
 )
@@ -60,6 +66,11 @@ target_compile_definitions(OnlineBoard
   PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
 target_link_libraries(OnlineBoard
   PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Quick)
+
+if(ANDROID)
+    target_link_libraries(OnlineBoard
+      PRIVATE Qt${QT_VERSION_MAJOR}::AndroidExtras)
+endif()
 
 set_target_properties(OnlineBoard PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com

@@ -3,12 +3,13 @@ import QtQuick.Controls 2.15
 
 ApplicationWindow {
     id: window
-    width: 640
+    width: 800
     height: 480
     visible: true
     title: qsTr("Stack")
 
     header: ToolBar {
+        id: toolBar
         contentHeight: toolButton.implicitHeight
 
         ToolButton {
@@ -28,6 +29,26 @@ ApplicationWindow {
             text: stackView.currentItem.title
             anchors.centerIn: parent
         }
+
+        Label {
+            height: parent.height
+            anchors.right: parent.right
+
+            //horizontalAlignment: Text.AlignHCenter//(1)
+            verticalAlignment: Text.AlignVCenter//(2)
+
+            text: stackView.depth > 1 ? "\u25C0" : "\u2630"
+            font.pixelSize: Qt.application.font.pixelSize * 1.6
+
+            color: "blue"
+
+            Label {
+                anchors.centerIn: parent
+                text: "5"
+                color: "white"
+            }
+        }
+
     }
 
     Drawer {
@@ -47,28 +68,32 @@ ApplicationWindow {
                 }
             }
             ItemDelegate {
-                text: qsTr("Page 2")
+                text: qsTr("index")
                 width: parent.width
                 onClicked: {
-                    stackView.push("Page2Form.ui.qml")
+                    stackView.push("qml/index.qml")
                     drawer.close()
                 }
             }
 
             ItemDelegate {
-                text: qsTr("Page 2")
+                text: qsTr("PainterBoard")
                 width: parent.width
                 onClicked: {
                     stackView.push("qml/PainterBoard.qml")
                     drawer.close()
                 }
             }
+
+
         }
     }
 
     StackView {
         id: stackView
-        initialItem: "HomeForm.ui.qml"
+        initialItem: "qml/PainterItem.qml"
+        //"qml/PainterItem.qml"
+        //flickresize pinchEvent
         anchors.fill: parent
     }
 }

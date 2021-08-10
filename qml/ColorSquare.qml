@@ -1,8 +1,9 @@
 import QtQuick 2.15
 
 Rectangle {
+    property int recSize: 20
     id: root
-    width: 48; height: 48
+    width: recSize; height: recSize
     color: "green"
     signal clicked
     property bool active: false
