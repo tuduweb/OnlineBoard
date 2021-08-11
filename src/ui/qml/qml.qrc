@@ -5,14 +5,14 @@
         <file>Page1Form.ui.qml</file>
         <file>Page2Form.ui.qml</file>
         <file>qtquickcontrols2.conf</file>
-        <file>qml/board.qml</file>
-        <file>qml/ColorSquare.qml</file>
-        <file>qml/PainterBoard.qml</file>
+        <file>board.qml</file>
+        <file>ColorSquare.qml</file>
+        <file>PainterBoard.qml</file>
         <file>icons/danger.png</file>
         <file>icons/wrong.png</file>
-        <file>qml/index.qml</file>
-        <file>qml/PainterItem.qml</file>
-        <file>qml/ColorPicker.qml</file>
-        <file>qml/flickresize.qml</file>
+        <file>index.qml</file>
+        <file>PainterItem.qml</file>
+        <file>ColorPicker.qml</file>
+        <file>flickresize.qml</file>
     </qresource>
 </RCC>

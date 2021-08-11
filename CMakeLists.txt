@@ -8,7 +8,7 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # QtCreator supports the following variables for Android, which are identical to qmake Android variables.
@@ -32,14 +32,21 @@ if(ANDROID)
     find_package(Qt${QT_VERSION_MAJOR} COMPONENTS AndroidExtras REQUIRED)
 endif()
 
-set(TS_FILES OnlineBoard_zh_CN.ts)
+#### ui
+include(cmake/components/obc-ui.cmake)
+include(cmake/components/obc-ui-qml.cmake)
+
+set(TS_FILES translations/OnlineBoard_zh_CN.ts)
 
 set(PROJECT_SOURCES
-        main.cpp
-        painteditem.h painteditem.cpp
-        qml.qrc
-        #${TS_FILES}
+        resources.qrc
+        src/main.cpp
+        src/painteditem.h src/painteditem.cpp
+        #src/ui/qml/qml.qrc
+        ${OBC_QML_SOURCES}
+        ${TS_FILES}
 )
+
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(OnlineBoard

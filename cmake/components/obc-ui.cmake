@@ -1,0 +1,4 @@
+set(OBC_UI_COMMON_BASEDIR ${CMAKE_SOURCE_DIR}/src/ui/common)
+#add_definitions(-DQAPPLICATION_CLASS=QApplication)
+
+#set(OBC_UI_COMMON_SOURCES ${QV2RAY_UI_COMMON_BASEDIR}/Helper.cpp)

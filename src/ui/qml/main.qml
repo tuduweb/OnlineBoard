@@ -71,7 +71,7 @@ ApplicationWindow {
                 text: qsTr("index")
                 width: parent.width
                 onClicked: {
-                    stackView.push("qml/index.qml")
+                    stackView.push("index.qml")
                     drawer.close()
                 }
             }
@@ -80,7 +80,7 @@ ApplicationWindow {
                 text: qsTr("PainterBoard")
                 width: parent.width
                 onClicked: {
-                    stackView.push("qml/PainterBoard.qml")
+                    stackView.push("PainterBoard.qml")
                     drawer.close()
                 }
             }
@@ -91,7 +91,7 @@ ApplicationWindow {
 
     StackView {
         id: stackView
-        initialItem: "qml/PainterItem.qml"
+        initialItem: "PainterItem.qml"
         //"qml/PainterItem.qml"
         //flickresize pinchEvent
         anchors.fill: parent
