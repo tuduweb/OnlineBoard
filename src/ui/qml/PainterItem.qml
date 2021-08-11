@@ -210,18 +210,17 @@ Page {
 
                         onClicked: {
                             console.log(modelData)
+                            painter.markId = index
                         }
-                        Component.onCompleted: {
-                            //console.log(modelData)
-                        }
+
                     }
                 }
-                Component.onCompleted: {
-                    var marks = painter.getMarks()
-                    for (var i = 0; i < marks.length; i++) {
-                        console.log(marks[i])
-                    }
-                }
+                // Component.onCompleted: {
+                //     var marks = painter.getMarks()
+                //     for (var i = 0; i < marks.length; i++) {
+                //         console.log(marks[i])
+                //     }
+                // }
             }
         
         Component.onCompleted: {

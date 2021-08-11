@@ -19,6 +19,7 @@ PaintedItem::PaintedItem(QQuickItem *parent)
     , m_bMoved(false)
     , m_pen(Qt::black)
     , m_paintMode(0)
+    , m_markId(-1)
 {
     setAcceptedMouseButtons(Qt::LeftButton);
     setAcceptTouchEvents(true);
@@ -65,16 +66,34 @@ void PaintedItem::paint(QPainter *painter)
 {
     painter->setRenderHint(QPainter::Antialiasing);
 
-    int size = m_elements.size();
-    ElementGroup *element;
-    for(int i = 0; i < size; ++i)
     {
-        element = m_elements.at(i);
-        painter->setPen(element->m_pen);
-        painter->drawLines(element->m_lines);
+        int size = m_elements.size();
+        ElementGroup *element;
+        for(int i = 0; i < size; ++i)
+        {
+            element = m_elements.at(i);
+            painter->setPen(element->m_pen);
+            painter->drawLines(element->m_lines);
+        }
     }
 
-    qInfo() << "paint mode : " << paintMode();
+    {
+        int size = m_markElms.size();
+        MarkElement *element;
+        for(int i = 0; i < size; ++i) {
+            element = m_markElms.at(i);
+            //element->
+            QImage image;
+            //TODO: 需要找到方法：如何在qml和c++两种形式中，使用qrc资源。
+            image.load(":" + element->markUrl());
+            painter->drawImage(element->rect(), image);
+            qInfo() << image.size();
+        }
+    }
+
+    
+
+
     if(paintMode() == 1) {
         qInfo() << "drawImage : " << m_icon.size();
         painter->drawImage(QRect(30, 30, 40, 40), m_icon);
@@ -112,6 +131,7 @@ bool PaintedItem::saveImage()
 
     pix->save(currentPath + "/png" + QString::number(QDateTime::currentMSecsSinceEpoch()) + ".png", "PNG");
 
+    qInfo() << "saved Path:" << currentPath;
 
     paint->end();
     delete paint;
@@ -129,12 +149,38 @@ void PaintedItem::mousePressEvent(QMouseEvent *event)
     }
     else
     {
-        //qDebug() << "mouse pressed";
-        m_bPressed = true;
-        m_element = new ElementGroup(m_pen);
-        m_elements.append(m_element);
-        m_lastPoint = event->localPos();
-        event->setAccepted(true);
+        if(m_markId >= 0) {
+            static auto lastPos = QPointF(0, 0);
+
+            const auto& pos = event->localPos();
+            const auto& marks = getMarks();
+            QPointF dis = pos - lastPos;
+
+            if(sqrt(pow(dis.x(), 2) + pow(dis.y(), 2)) > 20) {
+
+                m_markElms.append(new MarkElement(
+                        marks[m_markId < marks.size() ? m_markId : 0],
+                        QRectF(pos - QPointF(25, 25), QSizeF(50, 50))
+                        )
+                    );
+                
+                lastPos = pos;
+
+            }else{
+                qInfo() << pos << lastPos << "too closed";
+            }
+
+            update();
+
+        }else{
+            //qDebug() << "mouse pressed";
+            m_bPressed = true;
+            m_element = new ElementGroup(m_pen);
+            m_elements.append(m_element);
+            m_lastPoint = event->localPos();
+            event->setAccepted(true);
+        }
+
     }
 
 }
@@ -200,15 +246,15 @@ void PaintedItem::initMark()
 
 QStringList PaintedItem::getMarks()
 {
-    QStringList urls = {
-        "qrc:/assets/marks/mark1.png",
-        "qrc:/assets/marks/mark2.png",
-        "qrc:/assets/marks/mark3.png"
+    static QStringList urls = {
+        "/assets/marks/mark1.png",
+        "/assets/marks/mark2.png",
+        "/assets/marks/mark3.png"
     };
 
-    for(const auto& url : urls) {
-        qInfo() << "url :" << url;
-    }
+    // for(const auto& url : urls) {
+    //     qInfo() << "url :" << url;
+    // }
 
 
     return urls;

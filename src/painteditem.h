@@ -42,6 +42,28 @@ public:
     QPen m_pen;
 };
 
+
+class MarkElement
+{
+public:
+    MarkElement()
+    : m_markUrl(QString())
+    {
+    }
+
+    MarkElement(const QString& _url, const QRectF& _rect)
+    : m_markUrl(_url), m_rect(_rect)
+    {
+    }
+
+    const QString& m_markUrl;
+    QRectF m_rect;
+
+    const QString& markUrl() const { return m_markUrl; }
+    const QRectF& rect() const { return m_rect; }
+};
+
+
 class PaintedItem : public QQuickPaintedItem
 {
     Q_OBJECT
@@ -52,6 +74,7 @@ class PaintedItem : public QQuickPaintedItem
 
 
     Q_PROPERTY(int paintMode READ paintMode WRITE setPaintMode NOTIFY paintModeChanged)
+    Q_PROPERTY(int markId READ markId WRITE setMarkId NOTIFY markIdChanged)
 
 
 public:
@@ -70,6 +93,9 @@ public:
     int paintMode() const { return m_paintMode; }
     void setPaintMode(int mode) { m_paintMode = mode; m_bEnabled = !mode; emit paintModeChanged(); update(); }
 
+    int markId() const { return m_markId; }
+    void setMarkId(int id) { m_markId = id; emit markIdChanged(); qInfo() << "mark Id:" << m_markId; }
+
 
     Q_INVOKABLE void clear();
     Q_INVOKABLE void undo();
@@ -87,6 +113,7 @@ public:
 
 signals:
     void paintModeChanged();
+    void markIdChanged();
 
 protected:
     void mousePressEvent(QMouseEvent *event);
@@ -105,12 +132,16 @@ protected:
     QPointF m_lastPoint;
     QVector<ElementGroup*> m_elements;
     ElementGroup * m_element; // the Current ElementGroup
+
+    QVector<MarkElement*> m_markElms;//之后需要放在一起
+
     bool m_bEnabled;
     bool m_bPressed;
     bool m_bMoved;
     QPen m_pen; // the Current Pen
 
     int m_paintMode;
+    int m_markId;
 
     QImage m_icon;
 };
