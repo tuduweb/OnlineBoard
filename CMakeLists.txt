@@ -25,8 +25,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #    endif()
 #endif()
 
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Quick LinguistTools REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick LinguistTools REQUIRED)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Quick WebSockets LinguistTools REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick WebSockets LinguistTools REQUIRED)
 
 if(ANDROID)
     find_package(QT NAMES Qt6 Qt5 COMPONENTS AndroidExtras REQUIRED)
@@ -37,6 +37,10 @@ endif()
 include(cmake/components/obc-ui.cmake)
 include(cmake/components/obc-ui-qml.cmake)
 
+#### base & core
+include(cmake/components/obc-base.cmake)
+
+
 set(TS_FILES translations/OnlineBoard_zh_CN.ts)
 
 set(PROJECT_SOURCES
@@ -45,6 +49,7 @@ set(PROJECT_SOURCES
         src/painteditem.h src/painteditem.cpp
         #src/ui/qml/qml.qrc
         ${OBC_QML_SOURCES}
+        ${OBC_BASE_SOURCES}
         ${TS_FILES}
 )
 
@@ -72,8 +77,10 @@ endif()
 
 target_compile_definitions(OnlineBoard
   PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
+
+### add extra qt library
 target_link_libraries(OnlineBoard
-  PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Quick)
+  PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Quick Qt${QT_VERSION_MAJOR}::WebSockets)
 
 if(ANDROID)
     target_link_libraries(OnlineBoard

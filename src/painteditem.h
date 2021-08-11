@@ -47,7 +47,6 @@ class MarkElement
 {
 public:
     MarkElement()
-    : m_markUrl(QString())
     {
     }
 
@@ -56,12 +55,15 @@ public:
     {
     }
 
-    const QString& m_markUrl;
+    QString m_markUrl;
     QRectF m_rect;
 
     const QString& markUrl() const { return m_markUrl; }
     const QRectF& rect() const { return m_rect; }
 };
+
+
+#include "core/BackendSync.hpp"
 
 
 class PaintedItem : public QQuickPaintedItem
@@ -144,6 +146,9 @@ protected:
     int m_markId;
 
     QImage m_icon;
+
+
+    BackendSync* backendSync;
 };
 
 #endif // PAINTEDITEM_H

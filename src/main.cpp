@@ -19,6 +19,8 @@
 
 #include <QImage>
 
+#include <QNetworkProxy>
+
 #if defined (ANDROID)
 bool checkPermission() {
     QtAndroid::PermissionResult r = QtAndroid::checkPermission("android.permission.WRITE_EXTERNAL_STORAGE");
@@ -43,6 +45,7 @@ int main(int argc, char *argv[])
 #endif
 
     QGuiApplication app(argc, argv);
+    QNetworkProxyFactory::setUseSystemConfiguration(false);
 
     QTranslator translator;
     const QStringList uiLanguages = QLocale::system().uiLanguages();

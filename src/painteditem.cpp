@@ -40,11 +40,18 @@ PaintedItem::PaintedItem(QQuickItem *parent)
 //    });
 //    saveTimer->start();
 
+
+
+    backendSync = new BackendSync();
+
 }
 
 PaintedItem::~PaintedItem()
 {
     purgePaintElements();
+    
+    delete backendSync;
+
 }
 
 void PaintedItem::clear()
@@ -87,7 +94,7 @@ void PaintedItem::paint(QPainter *painter)
             //TODO: 需要找到方法：如何在qml和c++两种形式中，使用qrc资源。
             image.load(":" + element->markUrl());
             painter->drawImage(element->rect(), image);
-            qInfo() << image.size();
+            //qInfo() << image.size();
         }
     }
 
@@ -165,6 +172,8 @@ void PaintedItem::mousePressEvent(QMouseEvent *event)
                     );
                 
                 lastPos = pos;
+
+                backendSync->sendMessasge("placed : " + m_markElms.last()->markUrl() + QString(" point(%1, %2)").arg(pos.x()).arg(pos.y()) );
 
             }else{
                 qInfo() << pos << lastPos << "too closed";
