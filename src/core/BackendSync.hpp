@@ -5,7 +5,12 @@
 #include <QtWebSockets/QWebSocket>
 
 #include <QUrl>
-#include <QThread>
+//#include <QThread>
+
+#include <QNetworkInterface>
+#include <QUdpSocket>
+#include <QHostAddress>
+
 class BackendSync : public QObject
 {
     Q_OBJECT
@@ -25,6 +30,18 @@ public:
                  });
 
         m_webSocket.open(url);
+
+
+        m_socket = new QUdpSocket();
+        m_socket->bind(QHostAddress::Any, 9999);
+        connect(m_socket, &QUdpSocket::readyRead, this, [=](){
+            QString data;
+            char dat[1024] = "";
+            m_socket->readDatagram(dat, 1024);
+            data = dat;
+            qInfo() << "read udp : " << dat;
+        });
+
     }
 
     ~BackendSync()
@@ -35,6 +52,12 @@ public:
 public:
     void sendMessasge(QString message) {
         m_webSocket.sendTextMessage(message);
+        boardcast(message);
+    }
+
+    void boardcast(QString msg) {
+        QByteArray message = msg.toUtf8();
+        m_socket->writeDatagram(message, QHostAddress::Broadcast, 9999);
     }
 
 signals:
@@ -47,6 +70,9 @@ private slots:
 private:
     QWebSocket m_webSocket;
     QUrl m_url;
+
+    QUdpSocket* m_socket;
+
 };
 
 #endif

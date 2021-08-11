@@ -25,8 +25,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #    endif()
 #endif()
 
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Quick WebSockets LinguistTools REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick WebSockets LinguistTools REQUIRED)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Quick WebSockets Network NetLinguistTools REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick WebSockets Network LinguistTools REQUIRED)
 
 if(ANDROID)
     find_package(QT NAMES Qt6 Qt5 COMPONENTS AndroidExtras REQUIRED)
@@ -80,7 +80,7 @@ target_compile_definitions(OnlineBoard
 
 ### add extra qt library
 target_link_libraries(OnlineBoard
-  PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Quick Qt${QT_VERSION_MAJOR}::WebSockets)
+  PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Quick Qt${QT_VERSION_MAJOR}::WebSockets Qt${QT_VERSION_MAJOR}::Network)
 
 if(ANDROID)
     target_link_libraries(OnlineBoard

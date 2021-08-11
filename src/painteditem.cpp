@@ -11,6 +11,8 @@
 extern QString currentPath;
 #include <QDateTime>
 
+#include "utils/OBCHelpers.hpp"
+
 PaintedItem::PaintedItem(QQuickItem *parent)
     : QQuickPaintedItem(parent)
     , m_element(0)
@@ -29,20 +31,43 @@ PaintedItem::PaintedItem(QQuickItem *parent)
     //QString path = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
 
 
-//    QTimer* saveTimer = new QTimer();
-//    saveTimer->setInterval(500);	//0.5
-//    connect(saveTimer, &QTimer::timeout, [&](){
-//        QImage image;
-//        image.load(":/largeImage.jpg");
-//        QString dir = currentPath + "/" + QString::number(QDateTime::currentMSecsSinceEpoch()) + ".jpg";
-//        image.save(dir);
-//        qInfo() << "save dir " << dir;
-//    });
-//    saveTimer->start();
+    QString sentMsg = "message test time: %1 cnt: %2 ";
+    for(char c = 'a'; c < 'z'; ++c) {
+        sentMsg += c;
+    }
+
+   QTimer* saveTimer = new QTimer();
+   saveTimer->setInterval(100);	//0.5
+   
+   connect(saveTimer, &QTimer::timeout, [this, sentMsg](){
+       static int cnt = 0;
+    //    QImage image;
+    //    image.load(":/largeImage.jpg");
+    //    QString dir = currentPath + "/" + QString::number(QDateTime::currentMSecsSinceEpoch()) + ".jpg";
+    //    image.save(dir);
+    //    qInfo() << "save dir " << dir;
+        if(cnt++ < 10)
+            return;
+
+        backendSync->sendMessasge(sentMsg.arg(QString::number(QDateTime::currentMSecsSinceEpoch())).arg(cnt - 10));
+        qInfo() << sentMsg.arg(QString::number(QDateTime::currentMSecsSinceEpoch())).arg(cnt - 10);
+   });
+   //saveTimer->start();
 
 
 
     backendSync = new BackendSync();
+
+    /* Json Test */
+    QJsonObject obj;
+    obj.insert("type", "mark");
+    obj.insert("data", "testData");
+
+    parseAyncMessage(JsonToString(obj));
+    qInfo() << JsonToString(obj);
+
+    parseAyncMessage("{\"type\":\"mark\",\"data\":{\"x\":10,\"y\":20,\"w\":40,\"h\":50}}");
+    qInfo() << "{\"type\":\"mark\",\"data\":{\"x\":10,\"y\":20,\"w\":40,\"h\":50}}";
 
 }
 
@@ -267,4 +292,20 @@ QStringList PaintedItem::getMarks()
 
 
     return urls;
+}
+
+
+void PaintedItem::parseAyncMessage(const QString& message) {
+    QJsonObject obj = JsonFromString(message);//format
+    qInfo() << "parseAyncMessage : " << obj.contains("type");
+    
+    if(obj.contains("type")) {
+
+        if(obj["type"] == "mark") {
+            qInfo() << "parsed : " << obj["data"];
+        }else if(obj["type"] == "bg") {
+            //
+        }
+        
+    }
 }

@@ -6,6 +6,9 @@
 #include <QLineF>
 #include <QPen>
 
+#include <QJsonDocument>
+
+
 class ElementGroup
 {
 public:
@@ -111,7 +114,8 @@ public:
     void initMark();
     Q_INVOKABLE QStringList getMarks();//QUrl在qml中搞不成model..应该是说QVector搞不成.
 
-
+public slots:
+    void parseAyncMessage(const QString& message);
 
 signals:
     void paintModeChanged();

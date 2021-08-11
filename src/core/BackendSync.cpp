@@ -1,5 +1,7 @@
 #include "BackendSync.hpp"
 
+
+
 void BackendSync::onConnected() {
     connect(&m_webSocket, &QWebSocket::textMessageReceived,
         this, &BackendSync::onTextMessageReceived);
