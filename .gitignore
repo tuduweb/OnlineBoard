@@ -72,4 +72,5 @@ Thumbs.db
 *.exe
 
 /build
+/.vscode
 CMakeLists.txt.user

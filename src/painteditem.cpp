@@ -193,4 +193,23 @@ void PaintedItem::purgePaintElements()
     m_element = 0;
 }
 
+void PaintedItem::initMark()
+{
+    //可能要造一种数据结构?
+}
 
+QStringList PaintedItem::getMarks()
+{
+    QStringList urls = {
+        "qrc:/assets/marks/mark1.png",
+        "qrc:/assets/marks/mark2.png",
+        "qrc:/assets/marks/mark3.png"
+    };
+
+    for(const auto& url : urls) {
+        qInfo() << "url :" << url;
+    }
+
+
+    return urls;
+}

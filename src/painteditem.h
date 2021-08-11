@@ -78,6 +78,13 @@ public:
 
     Q_INVOKABLE bool saveImage();
 
+
+    //////////////////////////暂时在这个里面搞所有的测试 最后再抽离
+    void initMark();
+    Q_INVOKABLE QStringList getMarks();//QUrl在qml中搞不成model..应该是说QVector搞不成.
+
+
+
 signals:
     void paintModeChanged();
 

@@ -1,11 +1,13 @@
-import QtQuick 2.2
+import QtQuick 2.15
+import QtQuick.Controls 2.12
 import QtQuick.Window 2.1
 import an.qml.Controls 1.0
 import QtQuick.Controls 1.2
 import QtQuick.Layouts 1.1
 import QtQuick.Controls.Styles 1.2
 
-Item {
+Page {
+    title: "画板"
     visible: true;
 
     Rectangle {
@@ -37,6 +39,7 @@ Item {
                     horizontalAlignment: Text.AlignHCenter;
                     verticalAlignment: Text.AlignVCenter;
                 }
+                
             }
         }
         ColorPicker {
@@ -108,6 +111,7 @@ Item {
             text: thickness.maximumValue;
             font.pointSize: 12;
         }
+
         Rectangle {
             id: splitter2;
             border.width: 1;
@@ -119,66 +123,122 @@ Item {
             height: foreground.height;
         }
 
-        Button {
-            id: clear;
+        Column {
             anchors.left: splitter2.right;
-            anchors.leftMargin: 4;
-            anchors.verticalCenter: splitter2.verticalCenter;
-            width: 70;
-            height: 28;
-            text: "清除";
-            style: btnStyle;
-            onClicked: painter.clear();
-        }
+            anchors.verticalCenter: parent.verticalCenter
+            spacing: 2
 
-        Button {
-            id: undo;
-            anchors.left: clear.right;
-            anchors.leftMargin: 4;
-            anchors.top: clear.top;
-            width: 70;
-            height: 28;
-            text: "撤销";
-            style: btnStyle;
-            onClicked: painter.undo();
-        }
+            Row{
 
-        Button {
-            id: save;
-            anchors.left: undo.right;
-            anchors.leftMargin: 4;
-            anchors.top: clear.top;
-            width: 70;
-            height: 28;
-            text: "保存";
-            style: btnStyle;
-            onClicked: {
-                painter.grabToImage(function(result) {
-                    //painter.visible = false
-                    var res2 = result.saveToFile(localUrl + "/savedImage233.jpg")
-                    console.log("save res grab : " + res2)
-                    //painter.visible = true
-                })
+                Button {
+                    id: clear;
+                    //anchors.left: splitter2.right;
+                    //anchors.leftMargin: 4;
+                    //anchors.verticalCenter: splitter2.verticalCenter;
+                    width: 70;
+                    height: 28;
+                    text: "清除";
+                    style: btnStyle;
+                    onClicked: painter.clear();
+                }
 
-                painter.saveImage();
+                Button {
+                    id: undo;
+                    //anchors.left: clear.right;
+                    //anchors.leftMargin: 4;
+                    //anchors.top: clear.top;
+                    width: 70;
+                    height: 28;
+                    text: "撤销";
+                    style: btnStyle;
+                    onClicked: painter.undo();
+                }
+
+                Button {
+                    id: save;
+                    //anchors.left: undo.right;
+                    //anchors.leftMargin: 4;
+                    //anchors.top: clear.top;
+                    width: 70;
+                    height: 28;
+                    text: "保存";
+                    style: btnStyle;
+                    onClicked: {
+                        painter.grabToImage(function(result) {
+                            //painter.visible = false
+                            var res2 = result.saveToFile(localUrl + "/savedImage233.jpg")
+                            console.log("save res grab : " + res2)
+                            //painter.visible = true
+                        })
+
+                        painter.saveImage();
+                    }
+                }
+
+                Button {
+                    id: putSign
+                    //anchors.left: save.right;
+                    //anchors.leftMargin: 4;
+                    //anchors.top: clear.top;
+                    width: 70;
+                    height: 28;
+                    text: painter.paintMode === 1 ? "取消" : "标志"
+                    //text: "标志"
+                    style: btnStyle;
+                    onClicked: {
+                        painter.paintMode = 1 - painter.paintMode
+
+                    }
+                }
             }
-        }
 
-        Button {
-            id: putSign
-            anchors.left: save.right;
-            anchors.leftMargin: 4;
-            anchors.top: clear.top;
-            width: 70;
-            height: 28;
-            text: painter.paintMode === 1 ? "取消" : "标志"
-            //text: "标志"
-            style: btnStyle;
-            onClicked: {
-                painter.paintMode = 1 - painter.paintMode
+            Row{
+                Repeater {
+                    model: painter.getMarks()
+                    Button {
+                        id: btn
+                        width: 70;
+                        height: 28;
+                        text: "btn" + index
+                        style: btnStyle
+                        
+                        Image{
+                            anchors.verticalCenter: parent.verticalCenter
+                            source: modelData
+                            width: 24; height: 24
+                        }
 
+                        onClicked: {
+                            console.log(modelData)
+                        }
+                        Component.onCompleted: {
+                            //console.log(modelData)
+                        }
+                    }
+                }
+                Component.onCompleted: {
+                    var marks = painter.getMarks()
+                    for (var i = 0; i < marks.length; i++) {
+                        console.log(marks[i])
+                    }
+                }
             }
+        
+        Component.onCompleted: {
+            console.log("column height: " + height)
         }
+
+
+        }
+        // RowLayout{
+        //     anchors.left: thickness.right;
+
+        // }
+
+        // RowLayout{
+        //     anchors.left: thickness.right;
+            
+        // }
 
 
         Rectangle {
@@ -196,6 +256,10 @@ Item {
         anchors.left: parent.left;
         anchors.right: parent.right;
         anchors.bottom: parent.bottom;
+    }
+
+    Component.onCompleted: {
+        console.log(painter.getMarks())
     }
 }
 

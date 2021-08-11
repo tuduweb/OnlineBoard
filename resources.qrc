@@ -2,5 +2,10 @@
     <qresource prefix="/">
         <file>assets/icons/danger.png</file>
         <file>assets/icons/wrong.png</file>
+
+        <file>assets/marks/mark1.png</file>
+        <file>assets/marks/mark2.png</file>
+        <file>assets/marks/mark3.png</file>
+
     </qresource>
 </RCC>

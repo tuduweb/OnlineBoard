@@ -14,5 +14,6 @@
         <file>PainterItem.qml</file>
         <file>ColorPicker.qml</file>
         <file>flickresize.qml</file>
+        <file>PainterTest.qml</file>
     </qresource>
 </RCC>
