@@ -172,6 +172,65 @@ bool PaintedItem::saveImage()
     return false;
 }
 
+bool PaintedItem::saveImage(const QVariant& var) {
+    qInfo() << var;
+    qInfo() << var.type();
+
+    if(var.type() == QMetaType::QUrl) {
+
+        QPixmap *pix = new QPixmap(500,500);
+        //pix->load(var.toUrl().toString());
+        //QImage background(50, 50, QImage::Format_RGB16);
+        //pix->fill(QColor("yellow"));
+        QPainter *paint = new QPainter;
+        paint->begin(pix);
+
+        QUrl imageUrl = var.toUrl();
+        qInfo() << imageUrl.isValid();
+        QImage bg;
+        //Android: //content://com.android.providers.media.documents/document/image%3A41829
+        //Win10: ////file:///C:/Users/bin/OneDrive/图片/img-6daa1b4cffcd3b247860ff9ef0f663fa.jpg //有毛病 读不出来
+        bg.load(var.toUrl().toString());
+        //bg.load("C:/Users/bin/OneDrive/图片/img-6daa1b4cffcd3b247860ff9ef0f663fa.jpg");
+        bg.scaled(500, 500);
+        paint->drawImage(QPoint(0, 0), bg);
+        qInfo() << "draw bg size" << bg.size();
+
+        //paint->setPen(QColor(255,34,255,255));
+        //paint->drawRect(15,15, 100, 100);
+
+        int size = m_elements.size();
+        ElementGroup *element;
+        for(int i = 0; i < size; ++i)
+        {
+            element = m_elements.at(i);
+            paint->setPen(element->m_pen);
+            paint->drawLines(element->m_lines);
+        }
+
+        qInfo() << "paint mode : " << paintMode();
+        if(paintMode() == 1) {
+            qInfo() << "drawImage : " << m_icon.size();
+            paint->drawImage(QRect(30, 30, 40, 40), m_icon);
+        }
+
+        pix->save(currentPath + "/jpg" + QString::number(QDateTime::currentMSecsSinceEpoch()) + ".jpg", "JPG");
+
+        pix->save(currentPath + "/png" + QString::number(QDateTime::currentMSecsSinceEpoch()) + ".png", "PNG");
+
+        qInfo() << "saved Path:" << currentPath;
+
+        paint->end();
+        delete paint;
+        delete pix;
+
+
+    }
+
+    return false;
+}
+
+
 void PaintedItem::mousePressEvent(QMouseEvent *event)
 {
     m_bMoved = false;

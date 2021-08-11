@@ -5,6 +5,7 @@ import an.qml.Controls 1.0
 import QtQuick.Controls 1.2
 import QtQuick.Layouts 1.1
 import QtQuick.Controls.Styles 1.2
+import QtQuick.Dialogs 1.0
 
 Page {
     title: "画板"
@@ -171,7 +172,8 @@ Page {
                             //painter.visible = true
                         })
 
-                        painter.saveImage();
+                        //painter.saveImage()
+                        painter.saveImage(bgImage.source)
                     }
                 }
 
@@ -212,7 +214,6 @@ Page {
                             console.log(modelData)
                             painter.markId = index
                         }
-
                     }
                 }
                 // Component.onCompleted: {
@@ -221,6 +222,35 @@ Page {
                 //         console.log(marks[i])
                 //     }
                 // }
+
+                FileDialog {
+                    id: fileDialog
+                    title: "Please choose a file"
+                    folder: shortcuts.home
+                    onAccepted: {
+                        console.log("You chose: " + fileDialog.fileUrls)
+                        bgImage.source = fileDialog.fileUrl
+                        //Qt.quit()
+                    }
+                    onRejected: {
+                        console.log("Canceled")
+                        //Qt.quit()
+                    }
+                    //Component.onCompleted: visible = true
+                }
+
+                Button {
+                    id: fileBtn
+                    width: 70;
+                    height: 28;
+                    text: "file"
+                    style: btnStyle
+
+                    onClicked: {
+                        fileDialog.visible = true
+                    }
+                }
+
             }
         
         Component.onCompleted: {
@@ -247,6 +277,15 @@ Page {
             height: 2;
             anchors.bottom: parent.bottom;
         }
+    }
+
+    Image {
+        id: bgImage
+        anchors.top: options.bottom;
+        anchors.left: parent.left;
+        anchors.right: parent.right;
+        anchors.bottom: parent.bottom;
+        source: "qrc:/assets/marks/mark1.png"
     }
 
     APaintedItem {

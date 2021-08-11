@@ -108,6 +108,7 @@ public:
     void paint(QPainter *painter);
 
     Q_INVOKABLE bool saveImage();
+    Q_INVOKABLE bool saveImage(const QVariant& var);
 
 
     //////////////////////////暂时在这个里面搞所有的测试 最后再抽离
