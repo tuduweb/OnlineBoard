@@ -15,5 +15,6 @@
         <file>ColorPicker.qml</file>
         <file>flickresize.qml</file>
         <file>PainterTest.qml</file>
+        <file>RoomIndex.qml</file>
     </qresource>
 </RCC>

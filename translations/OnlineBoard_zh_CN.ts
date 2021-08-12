@@ -42,6 +42,32 @@
     </message>
 </context>
 <context>
+    <name>PainterItem</name>
+    <message>
+        <location filename="../src/ui/qml/PainterItem.qml" line="11"/>
+        <source>Painter Board</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>RoomIndex</name>
+    <message>
+        <location filename="../src/ui/qml/RoomIndex.qml" line="11"/>
+        <source>Room Center</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qml/RoomIndex.qml" line="32"/>
+        <source>Create</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qml/RoomIndex.qml" line="103"/>
+        <source>Join</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>index</name>
     <message>
         <location filename="../src/ui/qml/index.qml" line="7"/>

@@ -6,6 +6,10 @@ set(OBC_BASE_SOURCES
     ${OBC_BASEDIR_CORE}/BackendSync.cpp
     ${OBC_BASEDIR_CORE}/BackendSync.hpp
 
+    ${CMAKE_SOURCE_DIR}/src/roomservice.cpp
+    ${CMAKE_SOURCE_DIR}/src/roomservice.hpp
+
+
     #
     ${CMAKE_SOURCE_DIR}/src/utils/OBCHelpers.cpp
     ${CMAKE_SOURCE_DIR}/src/utils/OBCHelpers.hpp
