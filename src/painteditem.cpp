@@ -55,7 +55,7 @@ PaintedItem::PaintedItem(QQuickItem *parent)
    //saveTimer->start();
 
 
-
+    //TODO: 这样可能有泄露风险..一定要注意先后关系
     backendSync = BackendSync::getIns();
 
     /* Json Test */
