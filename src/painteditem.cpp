@@ -56,7 +56,7 @@ PaintedItem::PaintedItem(QQuickItem *parent)
 
 
 
-    backendSync = new BackendSync();
+    backendSync = BackendSync::getIns();
 
     /* Json Test */
     QJsonObject obj;

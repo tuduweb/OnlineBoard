@@ -17,6 +17,9 @@ class BackendSync : public QObject
     Q_OBJECT
 
 public:
+    static BackendSync* instance;
+    static BackendSync* getIns();
+
     BackendSync() : m_pWebSocketServer(nullptr)
     {
 
@@ -125,5 +128,7 @@ private:
     QUdpSocket* m_socket;
 
 };
+
+
 
 #endif

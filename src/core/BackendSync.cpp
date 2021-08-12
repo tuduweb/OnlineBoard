@@ -1,6 +1,12 @@
 #include "BackendSync.hpp"
 
-
+//初始化需要移动到别的地方..因为需要注意初始化顺序.
+BackendSync* BackendSync::instance = new BackendSync;
+BackendSync* BackendSync::getIns() {
+    if(instance == nullptr)
+        instance = new BackendSync;
+    return instance;
+}
 
 void BackendSync::onConnected() {
     connect(&m_webSocket, &QWebSocket::textMessageReceived,
