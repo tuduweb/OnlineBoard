@@ -115,6 +115,11 @@ public:
     void initMark();
     Q_INVOKABLE QStringList getMarks();//QUrl在qml中搞不成model..应该是说QVector搞不成.
 
+
+    /////////////////////////加入图形的方法
+    void paintMark(int _markId, const QPointF& pos);
+
+
 public slots:
     void parseAyncMessage(const QString& message);
 

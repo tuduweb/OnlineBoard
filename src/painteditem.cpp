@@ -63,11 +63,17 @@ PaintedItem::PaintedItem(QQuickItem *parent)
     obj.insert("type", "mark");
     obj.insert("data", "testData");
 
-    parseAyncMessage(JsonToString(obj));
+    //parseAyncMessage(JsonToString(obj));
     qInfo() << JsonToString(obj);
 
-    parseAyncMessage("{\"type\":\"mark\",\"data\":{\"x\":10,\"y\":20,\"w\":40,\"h\":50}}");
+    //parseAyncMessage("{\"type\":\"mark\",\"data\":{\"x\":10,\"y\":20,\"w\":40,\"h\":50}}");
     qInfo() << "{\"type\":\"mark\",\"data\":{\"x\":10,\"y\":20,\"w\":40,\"h\":50}}";
+
+    parseAyncMessage("{\"type\":\"mark\",\"id\":1,\"x\":25,\"y\":25}");
+
+    connect(backendSync, &BackendSync::receivedMessage, this, [=](QHostAddress addr, quint16 port, QString msg){
+        parseAyncMessage(msg);
+    });
 
 }
 
@@ -354,6 +360,30 @@ QStringList PaintedItem::getMarks()
 }
 
 
+void PaintedItem::paintMark(int _markId, const QPointF& pos) {
+
+    const auto& marks = getMarks();
+
+    if(_markId < 0 || _markId >= marks.size())
+    {
+        qWarning() << "markId invalid" << _markId << __FILE__ << __LINE__;
+        return;
+    }
+
+    //暂时不管大小等东西..
+    m_markElms.append(new MarkElement(
+        marks[_markId],
+        QRectF(pos - QPointF(25, 25), QSizeF(50, 50))
+        )
+    );
+
+    //refresh cache
+    update();
+    qInfo() << "mark size: " << m_markElms.size();
+
+}
+
+
 void PaintedItem::parseAyncMessage(const QString& message) {
     QJsonObject obj = JsonFromString(message);//format
     qInfo() << "parseAyncMessage : " << obj.contains("type");
@@ -361,10 +391,10 @@ void PaintedItem::parseAyncMessage(const QString& message) {
     if(obj.contains("type")) {
 
         if(obj["type"] == "mark") {
-            qInfo() << "parsed : " << obj["data"];
+            //qInfo() << "parsed : " << obj["data"];
+            paintMark(obj["id"].toInt(), {obj["x"].toDouble(), obj["y"].toDouble()});
         }else if(obj["type"] == "bg") {
             //
         }
-        
     }
 }
