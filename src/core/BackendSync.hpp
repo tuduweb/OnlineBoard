@@ -20,20 +20,16 @@ public:
     static BackendSync* instance;
     static BackendSync* getIns();
 
-    BackendSync() : m_pWebSocketServer(nullptr)
+    BackendSync() : m_pWebSocketServer(nullptr), m_socket(nullptr)
     {
 
 #if 0
         initWSClient();
 #else
-        initWSServer();
+        //initWSServer();
 #endif
-        m_socket = new QUdpSocket();
-        m_socket->bind(QHostAddress::Any, 9999);
-        connect(m_socket, &QUdpSocket::connected, this, [=](){
-            m_socket->writeDatagram("hello", QHostAddress("192.168.123.30"), 9999);
-        });
-        connect(m_socket, &QUdpSocket::readyRead, this, &BackendSync::onUdpReadyRead);
+
+        initUdpSocket();
 
     }
 
@@ -43,6 +39,10 @@ public:
     }
 
 public:
+    QString localAddress() {
+        //可能需要加入判断..
+        return QHostAddress(m_socket->localAddress()).toString();
+    }
     void sendMessasge(QString message) {
         m_webSocket.sendTextMessage(message);
         boardcast(message);
@@ -51,6 +51,11 @@ public:
     void boardcast(QString msg) {
         QByteArray message = msg.toUtf8();
         m_socket->writeDatagram(message, QHostAddress::Broadcast, 9999);
+    }
+
+    void sendUdpMessage(const QString& msg, const QHostAddress& addr, quint16 port) {
+        QByteArray message = msg.toUtf8();
+        m_socket->writeDatagram(message, addr, port);
     }
 
     void initWSClient() {
@@ -94,7 +99,27 @@ public:
                     });
             connect(m_pWebSocketServer, &QWebSocketServer::closed, this, &BackendSync::serverClosed);
         }
+    }
 
+    void initUdpSocket() {
+
+
+        for(const auto& addr : QNetworkInterface::allAddresses()) {
+            const auto& ipv4 = addr.toIPv4Address();
+            qInfo() << addr.toIPv4Address() << QHostAddress(addr.toIPv4Address()).toString();
+        }
+
+
+        qInfo() << "init UDP Socket";
+        m_socket = new QUdpSocket();
+        bool res = m_socket->bind(QHostAddress::Any, 9999);
+        qInfo() << "bind result : " << res;
+        connect(m_socket, &QUdpSocket::connected, this, [=](){
+            qInfo() << "connected";
+            //m_socket->writeDatagram("hello", m_socket->peerAddress(), m_socket->peerPort());
+            m_socket->writeDatagram("hello", QHostAddress("192.168.123.30"), 9999);
+        });
+        connect(m_socket, &QUdpSocket::readyRead, this, &BackendSync::onUdpReadyRead);
     }
 
 signals:

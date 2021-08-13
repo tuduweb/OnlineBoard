@@ -91,7 +91,7 @@ ApplicationWindow {
 
     StackView {
         id: stackView
-        initialItem: "PainterItem.qml"
+        initialItem: "RoomIndex.qml"
         //"qml/PainterItem.qml"
         //flickresize pinchEvent
         anchors.fill: parent

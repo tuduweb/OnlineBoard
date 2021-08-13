@@ -19,6 +19,7 @@ void BackendSync::onTextMessageReceived(QString message) {
     qInfo() << m_webSocket.peerAddress();
     qInfo() << m_webSocket.peerPort();
     qInfo() << m_webSocket.peerName();
+
 }
 
 void BackendSync::onUdpReadyRead() {

@@ -15,7 +15,7 @@ Page {
         anchors.right: parent.right;
         anchors.top: parent.top;
         implicitHeight: 70;
-        color: "lightgray";
+        color: "lightgray"
 
         Component{
             id: markBtnStyle;

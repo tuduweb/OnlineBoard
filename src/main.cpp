@@ -3,6 +3,7 @@
 #include <QQmlContext>
 
 #include "painteditem.h"
+#include "RoomService.hpp"
 
 #if defined (ANDROID)
 #include <QtAndroidExtras/QtAndroidExtras>
@@ -119,7 +120,9 @@ int main(int argc, char *argv[])
 
     engine.rootContext()->setContextProperty("testImage", image2);
 
-    qmlRegisterType<PaintedItem>("an.qml.Controls", 1, 0, "APaintedItem");
+    qmlRegisterType<RoomService>("obc.qml.Controls", 1, 0, "RoomService");
+    qmlRegisterType<PaintedItem>("obc.qml.Controls", 1, 0, "APaintedItem");
+
 
     engine.load(url);
 
