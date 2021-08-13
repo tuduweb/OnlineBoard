@@ -1,7 +1,7 @@
 #include "BackendSync.hpp"
 
 //初始化需要移动到别的地方..因为需要注意初始化顺序.
-BackendSync* BackendSync::instance = new BackendSync;
+BackendSync* BackendSync::instance = nullptr;
 BackendSync* BackendSync::getIns() {
     if(instance == nullptr)
         instance = new BackendSync;
@@ -53,6 +53,9 @@ void BackendSync::onUdpReadyRead() {
 
     if(ipList.indexOf(ip) == -1) {
         //other
+        emit receivedMessage(addr, port, data);
+    }else{
+        //self
         emit receivedMessage(addr, port, data);
     }
     

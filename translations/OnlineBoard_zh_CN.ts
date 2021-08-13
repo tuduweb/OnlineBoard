@@ -57,12 +57,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qml/RoomIndex.qml" line="35"/>
+        <location filename="../src/ui/qml/RoomIndex.qml" line="40"/>
         <source>Create</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qml/RoomIndex.qml" line="109"/>
+        <location filename="../src/ui/qml/RoomIndex.qml" line="101"/>
         <source>Join</source>
         <translation type="unfinished"></translation>
     </message>

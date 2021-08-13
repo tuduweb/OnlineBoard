@@ -18,6 +18,11 @@ Page{
 
     RoomService{
         id: roomService
+        Component.onCompleted: {
+            for(var i = 0; i < roomService.roomItems.length; ++i) {
+                console.log("item : " + roomService.roomItems[i].roomName)
+            }
+        }
     }
 
     RowLayout{
@@ -60,8 +65,8 @@ Page{
                     Item {
                         width: 180; height: 40
                         Column {
-                            Text { text: '<b>IP:</b> ' + ip }
-                            Text { text: '<b>Port:</b> ' + port }
+                            Text { text: '<b>IP:</b> ' + address }
+                            Text { text: '<b>Port:</b> ' + roomName }
                         }
                         MouseArea {
                             anchors.fill: parent
@@ -77,26 +82,13 @@ Page{
                 ListView {
                     id: list
                     anchors.fill: parent
-                    model: ListModel {
-                            ListElement {
-                                ip: "192.168.123.243"
-                                port: "4443"
-                            }
-                            ListElement {
-                                ip: "192.168.123.30"
-                                port: "12345"
-                            }
-                            ListElement {
-                                ip: "192.168.123.123"
-                                port: "22222"
-                            }
-                        }
+                    model: roomService.roomItems
                     delegate: contactDelegate
                     highlight: Rectangle { color: "lightsteelblue"; radius: 5 }
                     highlightFollowsCurrentItem: true
                     focus: true
 
-                    onCurrentItemChanged: console.log(model.get(list.currentIndex).ip + ' selected')
+                    onCurrentItemChanged: console.log(list.currentIndex + ' selected')
                     
                 }
             }

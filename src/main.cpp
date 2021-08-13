@@ -58,6 +58,8 @@ int main(int argc, char *argv[])
         }
     }
 
+    BackendSync::getIns();
+
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
@@ -121,6 +123,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("testImage", image2);
 
     qmlRegisterType<RoomService>("obc.qml.Controls", 1, 0, "RoomService");
+    qmlRegisterType<RoomProviderItem>("obc.qml.Controls", 1, 0, "RoomProviderItem");
     qmlRegisterType<PaintedItem>("obc.qml.Controls", 1, 0, "APaintedItem");
 
 
