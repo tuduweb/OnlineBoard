@@ -74,6 +74,23 @@ public:
         m_webSocket.open(url);
     }
 
+    void initWSClient(QString ip, quint16 port) {
+
+        QUrl url = QString("ws://%1:%2").arg(ip).arg(port);
+
+        //可能还需要区分一下来源 不然调用多次就connect了多次..
+        connect(&m_webSocket, &QWebSocket::connected, this, &BackendSync::onConnected);
+        connect(&m_webSocket, &QWebSocket::disconnected, this, &BackendSync::closed);
+
+        connect(&m_webSocket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error),
+                [=](QAbstractSocket::SocketError error) { 
+                    qInfo() << "ws error : " << error << m_webSocket.errorString();
+                 });
+
+        m_webSocket.open(url);
+
+    }
+
     void initWSServer() {
         m_pWebSocketServer = new QWebSocketServer(QStringLiteral("Echo Server"), QWebSocketServer::NonSecureMode, this);
         

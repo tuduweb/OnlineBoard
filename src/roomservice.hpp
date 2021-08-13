@@ -43,6 +43,8 @@ protected:
     QString m_roomName;
     QHostAddress m_addr;
     quint16 m_port;
+
+    QString m_roomHash;//房间校验
 };
 //Q_DECLARE_METATYPE(RoomProviderItem*)
 //Q_DECLARE_METATYPE(QQmlListProperty<RoomProviderItem>)
@@ -97,6 +99,19 @@ public:
         
         return true;
     }
+
+    //加入房间操作
+    Q_INVOKABLE bool joinRoom() {
+        //可能需要权限..所以可能需要弄个状态机..这里默认不弄权限了
+        QJsonObject obj;
+        obj.insert("type", "room");
+        //obj.insert("")
+        backendSync->initWSClient("192.168.123.30", 3000);
+    
+        return true;
+    }
+
+
 
     QQmlListProperty<RoomProviderItem> getRoomItems() {
         return QQmlListProperty<RoomProviderItem>(this, &m_roomItems);

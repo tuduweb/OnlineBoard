@@ -28,7 +28,7 @@ void BackendSync::onUdpReadyRead() {
     if(ipList.isEmpty()) {
         for(const auto& addr : QNetworkInterface::allAddresses()) {
             const auto& ipv4 = addr.toIPv4Address();
-            if(ipv4 == 0)
+            if(ipv4 == 0)//0.0.0.0
                 continue;
             qInfo() << addr.toIPv4Address() << QHostAddress(addr.toIPv4Address()).toString();
             ipList.append( QHostAddress(addr.toIPv4Address()).toString() );
