@@ -107,6 +107,7 @@ int main(int argc, char *argv[])
     currentPath = QDir::currentPath();
 #endif
 
+#if 0
     QImage image2(50, 50, QImage::Format_RGB16);
     image2.fill(QColor("red"));
 
@@ -121,9 +122,13 @@ int main(int argc, char *argv[])
     qInfo() << QLatin1String("data:") + "image/png" + QLatin1String(";base64,") + QLatin1String(ba.toBase64().constData());
 
     engine.rootContext()->setContextProperty("testImage", image2);
+#endif
 
     qmlRegisterType<RoomService>("obc.qml.Controls", 1, 0, "RoomService");
+    
     qmlRegisterType<RoomProviderItem>("obc.qml.Controls", 1, 0, "RoomProviderItem");
+    qmlRegisterType<RoomUserItem>("obc.qml.Controls", 1, 0, "RoomUserItem");
+
     qmlRegisterType<PaintedItem>("obc.qml.Controls", 1, 0, "APaintedItem");
 
 

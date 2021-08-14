@@ -38,10 +38,12 @@ Page{
             Layout.margins: 4
             color: "blue"
             Button{
-                anchors.centerIn: parent
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.bottom: parent.bottom
                 text: qsTr("Create")
                 onClicked: {
                     roomService.createRoom();
+                    roomDetail.state = '1'
                 }
             }
             Component.onCompleted: console.log(height)
@@ -123,35 +125,14 @@ Page{
     }
 
 
-    ColumnLayout {
+    Rectangle{
+
         //columns: 3
         id: roomDetail
-        //visible: true
         anchors.fill: parent
-        spacing: 5
-        opacity: 0.5
-        state:'1'
+        //visible: true
+        state:'0'
 
-        Repeater{
-            model: 5
-            Rectangle{
-                Layout.fillWidth: true
-                //Layout.implicitHeight: parent.height
-                Layout.preferredHeight: parent.height / 5 - 5
-                //Layout.margins: 4
-                color: "yellow"
-                Button{
-                    anchors.centerIn: parent
-                    text: qsTr("Create" + modelData)
-                    onClicked: {
-                        roomService.createRoom();
-                        //roomDetail.visible = false
-                        roomDetail.state = '0'
-                    }
-                }
-                Component.onCompleted: console.log(height)
-            }
-        }
 
         states: [
             State { name: '1';
@@ -165,6 +146,67 @@ Page{
             NumberAnimation { property: "opacity"; duration: 500}
         }
 
-    }
+        ColumnLayout {
+            //columns: 3
+            id: usersLayout
+            anchors.top: parent.top
+            height: parent.height - 100
+            width: parent.width
+            //Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
 
+            //visible: true
+            spacing: 5
+            opacity: 0.5
+            state:'1'
+
+            Repeater{
+                model: roomService.userItems
+                Rectangle{
+                    Layout.fillWidth: true
+                    //Layout.implicitHeight: parent.height
+                    Layout.preferredHeight: parent.height / 5 - 5
+                    //Layout.margins: 4
+                    color: "yellow"
+                    Button{
+                        anchors.centerIn: parent
+                        text: qsTr("Create" + modelData.userName)
+                        onClicked: {
+                            roomService.createRoom();
+                            //roomDetail.visible = false
+                        }
+                    }
+                    Component.onCompleted: console.log(height)
+                }
+            }
+
+
+
+
+
+
+        }
+
+        Rectangle{
+            anchors.top: usersLayout.bottom
+            width: parent.width
+            height: 100
+            color: "gray"
+            RowLayout{
+                Text{
+                    text: "Hello world"
+                }
+                Button{
+                    text: "Start"
+                    onClicked: {
+                        roomService.startPaint()
+                        console.log("start paint point 2")
+                        for(var i = 0; i < roomService.userItems.length; ++i) {
+                            console.log(roomService.userItems[i].userName)
+                        }
+                    }
+                }
+            }
+
+        }
+    }
 }

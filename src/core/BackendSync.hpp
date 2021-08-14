@@ -55,6 +55,17 @@ public:
         m_socket->writeDatagram(message, QHostAddress::Broadcast, 9999);
     }
 
+    void serverBoardcast(const QString& msg) {
+        qInfo() << "===============================================";
+        qInfo() << "send message : " << msg;
+        for(const auto& client : m_clients) {
+            qInfo() << "send to " << client->peerAddress().toString(); 
+            client->sendTextMessage(msg);
+        }
+        qInfo() << "***********************************************";
+
+    }
+
     void sendUdpMessage(const QString& msg, const QHostAddress& addr, quint16 port) {
         QByteArray message = msg.toUtf8();
         m_socket->writeDatagram(message, addr, port);
@@ -117,7 +128,7 @@ public:
 
     }
 
-    void initWSServer() {
+    bool initWSServer() {
         m_pWebSocketServer = new QWebSocketServer(QStringLiteral("Echo Server"), QWebSocketServer::NonSecureMode, this);
         
         int port{12345};
@@ -141,7 +152,9 @@ public:
 
                     });
             connect(m_pWebSocketServer, &QWebSocketServer::closed, this, &BackendSync::serverClosed);
+            return true;
         }
+        return false;
     }
 
     void initUdpSocket() {

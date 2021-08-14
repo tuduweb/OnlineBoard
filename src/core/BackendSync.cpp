@@ -65,6 +65,7 @@ void BackendSync::onUdpReadyRead() {
 //! [processTextMessage]
 void BackendSync::processTextMessage(QString message)
 {
+    //根据sender()区分是哪一个client发送的
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
     
     qDebug() << "Message received:" << message;
