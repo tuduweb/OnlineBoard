@@ -9,16 +9,16 @@ BackendSync* BackendSync::getIns() {
 }
 
 void BackendSync::onConnected() {
-    connect(&m_webSocket, &QWebSocket::textMessageReceived,
+    connect(m_webSocket, &QWebSocket::textMessageReceived,
         this, &BackendSync::onTextMessageReceived);
-    m_webSocket.sendTextMessage(QStringLiteral("Hello, world!"));
+    m_webSocket->sendTextMessage(QStringLiteral("Hello, world!"));
 }
 
 void BackendSync::onTextMessageReceived(QString message) {
     qDebug() << "Message received:" << message;
-    qInfo() << m_webSocket.peerAddress();
-    qInfo() << m_webSocket.peerPort();
-    qInfo() << m_webSocket.peerName();
+    qInfo() << m_webSocket->peerAddress();
+    qInfo() << m_webSocket->peerPort();
+    qInfo() << m_webSocket->peerName();
 
 }
 

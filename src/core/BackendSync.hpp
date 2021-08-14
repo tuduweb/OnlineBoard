@@ -20,7 +20,7 @@ public:
     static BackendSync* instance;
     static BackendSync* getIns();
 
-    BackendSync() : m_pWebSocketServer(nullptr), m_socket(nullptr)
+    BackendSync() : m_pWebSocketServer(nullptr), m_socket(nullptr), m_webSocket(nullptr)
     {
 
 #if 0
@@ -35,7 +35,8 @@ public:
 
     ~BackendSync()
     {
-        m_webSocket.close();
+        if(m_webSocket)
+            m_webSocket->close();
     }
 
 public:
@@ -43,9 +44,10 @@ public:
         //可能需要加入判断..
         return QHostAddress(m_socket->localAddress()).toString();
     }
-    void sendMessasge(QString message) {
-        m_webSocket.sendTextMessage(message);
-        boardcast(message);
+    void sendMessasge(const QString& message) {
+        Q_ASSERT(m_webSocket != nullptr);
+        m_webSocket->sendTextMessage(message);
+        //boardcast(message);
     }
 
     void boardcast(QString msg) {
@@ -60,34 +62,58 @@ public:
 
     void initWSClient() {
 
+        if(m_webSocket)
+        {
+            qInfo() << "websocket client already exist!";
+            return;
+        }
+        m_webSocket = new QWebSocket;
+
         //QUrl url = "ws://192.168.123.243:3000";
         QUrl url = QStringLiteral("ws://192.168.123.30:3000");
 
-        connect(&m_webSocket, &QWebSocket::connected, this, &BackendSync::onConnected);
-        connect(&m_webSocket, &QWebSocket::disconnected, this, &BackendSync::closed);
+        connect(m_webSocket, &QWebSocket::connected, this, &BackendSync::onConnected);
+        connect(m_webSocket, &QWebSocket::disconnected, this, &BackendSync::closed);
 
-        connect(&m_webSocket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error),
+        connect(m_webSocket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error),
                 [=](QAbstractSocket::SocketError error) { 
-                    qInfo() << "ws error : " << error << m_webSocket.errorString();
+                    qInfo() << "ws error : " << error << m_webSocket->errorString();
                  });
 
-        m_webSocket.open(url);
+        m_webSocket->open(url);
     }
 
     void initWSClient(QString ip, quint16 port) {
 
+        if(m_webSocket)
+        {
+            qInfo() << "websocket client already exist!";
+            //return;
+            m_webSocket->close();
+            m_webSocket->deleteLater();
+        }
+        m_webSocket = new QWebSocket;
+
         QUrl url = QString("ws://%1:%2").arg(ip).arg(port);
 
         //可能还需要区分一下来源 不然调用多次就connect了多次..
-        connect(&m_webSocket, &QWebSocket::connected, this, &BackendSync::onConnected);
-        connect(&m_webSocket, &QWebSocket::disconnected, this, &BackendSync::closed);
+        connect(m_webSocket, &QWebSocket::connected, this, &BackendSync::onConnected);
+        connect(m_webSocket, &QWebSocket::connected, this, &BackendSync::connected);
+        connect(m_webSocket, &QWebSocket::disconnected, this, &BackendSync::closed);
 
-        connect(&m_webSocket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error),
+        connect(m_webSocket, &QWebSocket::stateChanged, this, [=](QAbstractSocket::SocketState state){
+            qInfo() << m_webSocket << "state changed : " << state;
+        });
+        connect(m_webSocket, &QWebSocket::stateChanged, this, &BackendSync::stateChanged);
+
+        //aboutToClose() // 关闭前
+
+        connect(m_webSocket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error),
                 [=](QAbstractSocket::SocketError error) { 
-                    qInfo() << "ws error : " << error << m_webSocket.errorString();
+                    qInfo() << "ws error : " << error << m_webSocket->errorString();
                  });
 
-        m_webSocket.open(url);
+        m_webSocket->open(url);
 
     }
 
@@ -133,15 +159,23 @@ public:
         qInfo() << "bind result : " << res;
         connect(m_socket, &QUdpSocket::connected, this, [=](){
             qInfo() << "connected";
-            //m_socket->writeDatagram("hello", m_socket->peerAddress(), m_socket->peerPort());
-            m_socket->writeDatagram("hello", QHostAddress("192.168.123.30"), 9999);
+            m_socket->writeDatagram("hello", m_socket->peerAddress(), m_socket->peerPort());
+            //m_socket->writeDatagram("hello", QHostAddress("192.168.123.30"), 9999);
         });
         connect(m_socket, &QUdpSocket::readyRead, this, &BackendSync::onUdpReadyRead);
     }
 
+    QAbstractSocket::SocketState WSState() {
+        if(m_webSocket == nullptr)
+            return QAbstractSocket::SocketState::UnconnectedState;
+        return m_webSocket->state();
+    }
+
 signals:
+    void connected();
     void closed();
     void serverClosed();
+    void stateChanged(QAbstractSocket::SocketState state);
 
     void receivedMessage(QHostAddress addr, quint16 port, QString msg);
 
@@ -155,11 +189,12 @@ protected slots:
 
 private slots:
     void onConnected();
+    //void onClosed();
     void onTextMessageReceived(QString message);
 
 private:
     //clients
-    QWebSocket m_webSocket;
+    QWebSocket* m_webSocket;
 
     //server
     QWebSocketServer *m_pWebSocketServer;

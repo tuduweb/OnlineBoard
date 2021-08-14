@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QJsonObject>
+#include <QEventLoop>
 
 //BASE lib
 #include "utils/OBCHelpers.hpp"
@@ -11,6 +12,8 @@
 
 #include <QQmlListProperty>
 #include <QtQml/qqml.h>
+
+
 
 /**
  * 定义广播的房间的数据结构 供..使用
@@ -105,9 +108,26 @@ public:
         //可能需要权限..所以可能需要弄个状态机..这里默认不弄权限了
         QJsonObject obj;
         obj.insert("type", "room");
-        //obj.insert("")
+        obj.insert("op", "join");
+
+        QEventLoop eventLoop;
+
+        connect(backendSync, &BackendSync::stateChanged, &eventLoop, &QEventLoop::quit);
+
+        //异步初始化 并连接
         backendSync->initWSClient("192.168.123.30", 3000);
-    
+        qInfo() << "exec state:" << backendSync->WSState();
+        eventLoop.exec();
+        qInfo() << "quit state:" << backendSync->WSState();
+
+        if(backendSync->WSState() == QAbstractSocket::SocketState::ConnectedState) {
+            backendSync->sendMessasge(JsonToString(obj));
+        }
+
+        qInfo() << "eventLoop quit";
+
+        //异步..
+
         return true;
     }
 
