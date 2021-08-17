@@ -1,7 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.12
 import QtQuick.Window 2.1
-import an.qml.Controls 1.0
+import obc.qml.Controls 1.0
 import QtQuick.Controls 1.2
 import QtQuick.Layouts 1.1
 import QtQuick.Controls.Styles 1.2

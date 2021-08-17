@@ -12,6 +12,10 @@ void BackendSync::onConnected() {
     connect(m_webSocket, &QWebSocket::textMessageReceived,
         this, &BackendSync::onTextMessageReceived);
     m_webSocket->sendTextMessage(QStringLiteral("Hello, world!"));
+
+    connect(m_webSocket, &QWebSocket::textMessageReceived, this, &BackendSync::serverTextMessageReceived);
+    connect(m_webSocket, &QWebSocket::binaryMessageReceived, this, &BackendSync::serverBinaryMessageReceived);
+
 }
 
 void BackendSync::onTextMessageReceived(QString message) {

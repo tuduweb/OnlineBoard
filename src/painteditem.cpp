@@ -253,6 +253,8 @@ void PaintedItem::mousePressEvent(QMouseEvent *event)
             const auto& marks = getMarks();
             QPointF dis = pos - lastPos;
 
+        /* 本地画图 直接加入到元素数组中 再渲染 */
+
             if(sqrt(pow(dis.x(), 2) + pow(dis.y(), 2)) > 20) {
 
                 m_markElms.append(new MarkElement(
@@ -263,8 +265,9 @@ void PaintedItem::mousePressEvent(QMouseEvent *event)
                 
                 lastPos = pos;
 
-                backendSync->sendMessasge("placed : " + m_markElms.last()->markUrl() + QString(" point(%1, %2)").arg(pos.x()).arg(pos.y()) );
-
+                //同步操作 需要抽象
+                //backendSync->sendMessasge("placed : " + m_markElms.last()->markUrl() + QString(" point(%1, %2)").arg(pos.x()).arg(pos.y()) );
+                qInfo() << "placed : " + m_markElms.last()->markUrl() + QString(" point(%1, %2)").arg(pos.x()).arg(pos.y());
             }else{
                 qInfo() << pos << lastPos << "too closed";
             }
@@ -308,6 +311,7 @@ void PaintedItem::mouseReleaseEvent(QMouseEvent *event)
     else
     {
         //qDebug() << "mouse released";
+        /* 本地画图 直接加入到元素数组中 再渲染 */
         m_bPressed = false;
         m_bMoved = false;
         m_element->m_lines.append(QLineF(m_lastPoint, event->localPos()));

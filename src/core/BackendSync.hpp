@@ -44,15 +44,23 @@ public:
         //可能需要加入判断..
         return QHostAddress(m_socket->localAddress()).toString();
     }
+    /**
+     * 发送消息给远程服务器
+     */
     void sendMessasge(const QString& message) {
         Q_ASSERT(m_webSocket != nullptr);
         m_webSocket->sendTextMessage(message);
         //boardcast(message);
     }
 
-    void boardcast(QString msg) {
+    void boardcast(const QString& msg) {
         QByteArray message = msg.toUtf8();
-        m_socket->writeDatagram(message, QHostAddress::Broadcast, 9999);
+        m_socket->writeDatagram(message, QHostAddress::Broadcast, 21817);
+    }
+
+    void boardcast(const QString& msg, quint16 port) {
+        QByteArray message = msg.toUtf8();
+        m_socket->writeDatagram(message, QHostAddress::Broadcast, port);
     }
 
     void serverBoardcast(const QString& msg) {
@@ -136,7 +144,7 @@ public:
 
         qInfo() << "websocket server start ..";
         if (m_pWebSocketServer->listen(QHostAddress::Any, port)) {
-            qDebug() << "Echoserver listening on port" << port;
+            qDebug() << "websocket listening on port" << port;
             connect(m_pWebSocketServer, &QWebSocketServer::newConnection,
                     this, [=](){
                         QWebSocket *pSocket = m_pWebSocketServer->nextPendingConnection();
@@ -168,8 +176,9 @@ public:
 
         qInfo() << "init UDP Socket";
         m_socket = new QUdpSocket();
-        bool res = m_socket->bind(QHostAddress::Any, 9999);
+        bool res = m_socket->bind(QHostAddress::Any, 21817);
         qInfo() << "bind result : " << res;
+
         connect(m_socket, &QUdpSocket::connected, this, [=](){
             qInfo() << "connected";
             m_socket->writeDatagram("hello", m_socket->peerAddress(), m_socket->peerPort());
@@ -190,8 +199,11 @@ signals:
     void serverClosed();
     void stateChanged(QAbstractSocket::SocketState state);
 
+    //接收到udp广播消息 这里需要改个名字..
     void receivedMessage(QHostAddress addr, quint16 port, QString msg);
 
+    void serverTextMessageReceived(const QString& message);
+    void serverBinaryMessageReceived(const QByteArray& byteArray);
 protected slots:
     void onUdpReadyRead();
 

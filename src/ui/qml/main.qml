@@ -95,5 +95,12 @@ ApplicationWindow {
         //"qml/PainterItem.qml"
         //flickresize pinchEvent
         anchors.fill: parent
+        onCurrentItemChanged: console.log("depath:", depth)
     }
+
+
+    function load_page(pageUrl) {
+        stackView.push(pageUrl)
+    }
+
 }

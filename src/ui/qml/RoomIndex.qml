@@ -23,6 +23,13 @@ Page{
                 console.log("item : " + roomService.roomItems[i].roomName)
             }
         }
+
+        onStartPaintReceived: {
+            console.log("start paint")
+            
+            //页面跳转过去 这里的行为可能需要封装一下
+            load_page("PainterItem.qml")
+        }
     }
 
     RowLayout{
@@ -136,14 +143,14 @@ Page{
 
         states: [
             State { name: '1';
-                PropertyChanges {   target: roomDetail; opacity: 1.0    }
+                PropertyChanges {   target: roomDetail; opacity: 0.7    }
             },
             State { name: '0';
                 PropertyChanges {   target: roomDetail; opacity: 0.0    }
             }
         ]
         transitions: Transition {
-            NumberAnimation { property: "opacity"; duration: 500}
+            NumberAnimation { property: "opacity"; duration: 250}
         }
 
         ColumnLayout {
@@ -169,9 +176,9 @@ Page{
                     color: "yellow"
                     Button{
                         anchors.centerIn: parent
-                        text: qsTr("Create" + modelData.userName)
+                        text: qsTr("User:" + modelData.userName)
                         onClicked: {
-                            roomService.createRoom();
+                            //roomService.createRoom();
                             //roomDetail.visible = false
                         }
                     }
@@ -203,6 +210,7 @@ Page{
                         for(var i = 0; i < roomService.userItems.length; ++i) {
                             console.log(roomService.userItems[i].userName)
                         }
+                        load_page("PainterItem.qml")
                     }
                 }
             }
