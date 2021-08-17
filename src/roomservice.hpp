@@ -72,6 +72,8 @@ private:
     QString m_userName;
     QHostAddress m_userAddress;
     quint16 m_userPort;
+
+    //对应了一个Websocket连接..
 };
 
 /**
@@ -212,6 +214,9 @@ signals:
     void userItemsChanged();
 
     void startPaintReceived();
+
+protected:
+    void timerEvent(QTimerEvent *event) override {}
 
 protected slots:
     void parseAyncMessage(QHostAddress addr, quint16 port, QString msg)

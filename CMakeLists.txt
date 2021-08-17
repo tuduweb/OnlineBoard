@@ -46,7 +46,8 @@ set(TS_FILES translations/OnlineBoard_zh_CN.ts)
 set(PROJECT_SOURCES
         resources.qrc
         src/main.cpp
-        src/painteditem.h src/painteditem.cpp
+        #src/painteditem.h src/painteditem.cpp
+        src/PaintingBoard.hpp src/PaintingBoard.cpp
         #src/ui/qml/qml.qrc
         ${OBC_QML_SOURCES}
         ${OBC_BASE_SOURCES}

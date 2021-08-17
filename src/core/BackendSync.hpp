@@ -185,6 +185,7 @@ public:
         bool res = m_socket->bind(QHostAddress::Any, 21817);
         qInfo() << "bind result : " << res;
 
+        //udp有connected的信号? 似乎没有阿
         connect(m_socket, &QUdpSocket::connected, this, [=](){
             qInfo() << "connected";
             m_socket->writeDatagram("hello", m_socket->peerAddress(), m_socket->peerPort());
@@ -206,7 +207,7 @@ signals:
     void stateChanged(QAbstractSocket::SocketState state);
 
     //接收到udp广播消息 这里需要改个名字..
-    void receivedMessage(QHostAddress addr, quint16 port, QString msg);
+    void receivedMessage(QHostAddress addr, quint16 port, const QString& msg);
 
     void serverTextMessageReceived(const QString& message);
     void serverBinaryMessageReceived(const QByteArray& byteArray);

@@ -2,7 +2,7 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 
-#include "painteditem.h"
+#include "PaintingBoard.hpp"
 #include "RoomService.hpp"
 
 #if defined (ANDROID)
@@ -64,9 +64,9 @@ int main(int argc, char *argv[])
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {
+        qInfo() << url << objUrl;
         if (!obj && url == objUrl)
             QCoreApplication::exit(-1);
-        qInfo() << url << objUrl;
     }, Qt::QueuedConnection);
 
 
@@ -130,8 +130,9 @@ int main(int argc, char *argv[])
     qmlRegisterType<RoomProviderItem>("obc.qml.Controls", 1, 0, "RoomProviderItem");
     qmlRegisterType<RoomUserItem>("obc.qml.Controls", 1, 0, "RoomUserItem");
 
-    qmlRegisterType<PaintedItem>("obc.qml.Controls", 1, 0, "APaintedItem");
+    //qmlRegisterType<PaintedItem>("obc.qml.Controls", 1, 0, "APaintedItem");
 
+    qmlRegisterType<PaintingBoard>("obc.qml.Controls", 1, 0, "PaintingBoard");
 
     engine.load(url);
 

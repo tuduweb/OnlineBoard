@@ -288,7 +288,7 @@ Page {
         source: "qrc:/assets/marks/mark1.png"
     }
 
-    APaintedItem {
+    PaintingBoard {
         id: painter;
         anchors.top: options.bottom;
         anchors.left: parent.left;
