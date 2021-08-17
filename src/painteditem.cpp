@@ -268,6 +268,15 @@ void PaintedItem::mousePressEvent(QMouseEvent *event)
                 //同步操作 需要抽象
                 //backendSync->sendMessasge("placed : " + m_markElms.last()->markUrl() + QString(" point(%1, %2)").arg(pos.x()).arg(pos.y()) );
                 qInfo() << "placed : " + m_markElms.last()->markUrl() + QString(" point(%1, %2)").arg(pos.x()).arg(pos.y());
+                
+                //var sent = '{"type":"mark","x":' + x + ',"y":' + y + ',"id":' + id + '}';
+
+                QJsonObject obj;
+                obj.insert("type", "mark");
+                obj.insert("x", pos.x());
+                obj.insert("y", pos.y());
+                obj.insert("id", m_markId);
+                backendSync->sendMessasge(JsonToString(obj));
             }else{
                 qInfo() << pos << lastPos << "too closed";
             }
