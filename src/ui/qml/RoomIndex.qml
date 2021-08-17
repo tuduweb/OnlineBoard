@@ -121,11 +121,11 @@ Page{
             states: [
                 State {
                     name: "joining"
-                    PropertyChanges { target: roomCenter; color: "purple" }
+                    PropertyChanges { target: roomCenter; color: "purple"; enabled: false }
                 },
                 State {
                     name: "joined"
-                    PropertyChanges { target: roomCenter; color: "green" }
+                    PropertyChanges { target: roomCenter; color: "green";  enabled: false }
                 }
             ]
         }

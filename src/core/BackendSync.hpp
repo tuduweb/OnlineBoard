@@ -48,8 +48,14 @@ public:
      * 发送消息给远程服务器
      */
     void sendMessasge(const QString& message) {
-        Q_ASSERT(m_webSocket != nullptr);
-        m_webSocket->sendTextMessage(message);
+        //Q_ASSERT(m_webSocket != nullptr);
+
+        if(m_webSocket) {
+            m_webSocket->sendTextMessage(message);
+        }else{
+            serverBoardcast(message);
+        }
+       
         //boardcast(message);
     }
 
@@ -102,7 +108,7 @@ public:
         m_webSocket->open(url);
     }
 
-    void initWSClient(QString ip, quint16 port) {
+    void initWSClient(const QString& ip, quint16 port) {
 
         if(m_webSocket)
         {

@@ -127,6 +127,8 @@ signals:
     void paintModeChanged();
     void markIdChanged();
 
+    void sendMessage(const QString& message);
+
 protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
@@ -159,6 +161,8 @@ protected:
 
 
     BackendSync* backendSync;
+
+    bool isServer = false;
 };
 
 #endif // PAINTEDITEM_H

@@ -74,7 +74,7 @@ void BackendSync::processTextMessage(QString message)
     
     qDebug() << "Message received:" << message;
     
-    receivedMessage(pClient->peerAddress(), pClient->peerPort(), message);
+    emit receivedMessage(pClient->peerAddress(), pClient->peerPort(), message);
 
     if (pClient) {
         //pClient->sendTextMessage(message);

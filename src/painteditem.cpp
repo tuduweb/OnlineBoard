@@ -71,8 +71,18 @@ PaintedItem::PaintedItem(QQuickItem *parent)
 
     parseAyncMessage("{\"type\":\"mark\",\"id\":1,\"x\":25,\"y\":25}");
 
-    connect(backendSync, &BackendSync::receivedMessage, this, [=](QHostAddress addr, quint16 port, QString msg){
+    connect(backendSync, &BackendSync::receivedMessage, this, [=](QHostAddress addr, quint16 port, const QString& msg){
         parseAyncMessage(msg);
+    });
+
+    connect(backendSync, &BackendSync::serverTextMessageReceived, this, [=](const QString& msg){
+        parseAyncMessage(msg);
+    });
+
+    connect(this, &PaintedItem::sendMessage, backendSync, [=](const QString& msg){
+
+        backendSync->sendMessasge(msg);
+
     });
 
 }
@@ -276,7 +286,8 @@ void PaintedItem::mousePressEvent(QMouseEvent *event)
                 obj.insert("x", pos.x());
                 obj.insert("y", pos.y());
                 obj.insert("id", m_markId);
-                backendSync->sendMessasge(JsonToString(obj));
+                //backendSync->sendMessasge(JsonToString(obj));
+                emit sendMessage(JsonToString(obj));
             }else{
                 qInfo() << pos << lastPos << "too closed";
             }
