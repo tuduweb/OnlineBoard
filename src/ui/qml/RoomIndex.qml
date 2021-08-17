@@ -16,6 +16,33 @@ Page{
     //     color: "gray"
     // }
 
+
+    Component{
+        id: btnStyle;
+        ButtonStyle {
+            background: Rectangle {
+                implicitWidth: 70;
+                implicitHeight: 28;
+                border.width: control.hovered ? 2 : 1;
+                border.color: "#888";
+                radius: 4;
+                gradient: Gradient {
+                    GradientStop { position: 0 ; color: control.pressed ? "#ccc" : "#eee" }
+                    GradientStop { position: 1 ; color: control.pressed ? "#aaa" : "#ccc" }
+                }
+            }
+
+            label: Text {
+                text: control.text;
+                font.pointSize: 12;
+                color: "blue";
+                horizontalAlignment: Text.AlignHCenter;
+                verticalAlignment: Text.AlignVCenter;
+            }
+            
+        }
+    }
+
     RoomService{
         id: roomService
         Component.onCompleted: {
@@ -26,9 +53,9 @@ Page{
 
         onStartPaintReceived: {
             console.log("start paint")
-            
+
             //页面跳转过去 这里的行为可能需要封装一下
-            load_page("PainterItem.qml")
+            load_page("PaintingBoard.qml")
         }
     }
 
@@ -47,21 +74,29 @@ Page{
             Button{
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.bottom: parent.bottom
+
+                style: btnStyle
+
+
                 text: qsTr("Create")
                 onClicked: {
+                    
                     roomService.createRoom();
                     roomDetail.state = '1'
                 }
             }
             Component.onCompleted: console.log(height)
         }
-        
+
 
         Rectangle{
             id: roomCenter
             Layout.fillWidth: true
             Layout.preferredHeight: parent.height
             Layout.margins: 4
+
+            property int currentPort
+            property string currentIp
 
             color: "gray"
 
@@ -77,17 +112,22 @@ Page{
                     Item {
                         width: 180; height: 40
                         Column {
+                            Text { text: '<b>' + roomName + '</b> ' }
                             Text { text: '<b>IP:</b> ' + address }
-                            Text { text: '<b>Port:</b> ' + roomName }
+                            Text { text: '<b>Port:</b> ' + port }
                         }
                         MouseArea {
                             anchors.fill: parent
                             onClicked: {
                                 console.log("clicked : " + index)
                                 list.currentIndex = index
+                                roomCenter.currentPort = roomService.roomItems[index].port
+                                roomCenter.currentIp = roomService.roomItems[index].address
+
+                                console.log(roomCenter.currentIp, roomCenter.currentPort)
                             }
                         }
-                        
+
                     }
                 }
 
@@ -101,7 +141,7 @@ Page{
                     focus: true
 
                     onCurrentItemChanged: console.log(list.currentIndex + ' selected')
-                    
+
                 }
             }
 
@@ -113,7 +153,7 @@ Page{
                 text: qsTr("Join")
                 onClicked: {
                     roomCenter.state  = 'joining'
-                    roomService.joinRoom()
+                    roomService.joinRoom(roomCenter.currentIp, roomCenter.currentPort)
                 }
             }
 
@@ -134,16 +174,14 @@ Page{
 
     Rectangle{
 
-        //columns: 3
         id: roomDetail
         anchors.fill: parent
         //visible: true
         state:'0'
 
-
         states: [
             State { name: '1';
-                PropertyChanges {   target: roomDetail; opacity: 0.7    }
+                PropertyChanges {   target: roomDetail; opacity: 1.0    }
             },
             State { name: '0';
                 PropertyChanges {   target: roomDetail; opacity: 0.0    }
@@ -186,11 +224,6 @@ Page{
                 }
             }
 
-
-
-
-
-
         }
 
         Rectangle{
@@ -204,13 +237,14 @@ Page{
                 }
                 Button{
                     text: "Start"
+                    style: btnStyle
                     onClicked: {
                         roomService.startPaint()
                         console.log("start paint point 2")
                         for(var i = 0; i < roomService.userItems.length; ++i) {
                             console.log(roomService.userItems[i].userName)
                         }
-                        load_page("PainterItem.qml")
+                        load_page("PaintingBoard.qml")
                     }
                 }
             }

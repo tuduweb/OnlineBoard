@@ -24,20 +24,23 @@ class RoomProviderItem : public QObject
 
     Q_PROPERTY(QString roomName READ getRoomName NOTIFY roomNameChanged)
     Q_PROPERTY(QString address READ getAddr NOTIFY addressChanged)
+    Q_PROPERTY(quint16 port READ getPort NOTIFY portChanged)
 
     //QML_ELEMENT
 public:
     QString getRoomName() { return m_roomName; }
     QString getAddr() { return m_addr.toString(); }
+    quint16 getPort() { return m_port; }
 
-    RoomProviderItem(const QHostAddress &addr, quint16 port) : m_addr(addr), m_port(port), m_roomName(addr.toString() + "'s room") {}
-    RoomProviderItem(const QString &addr, quint16 port) : m_addr(addr), m_port(port), m_roomName(addr + "'s room") {}
+    RoomProviderItem(const QHostAddress &addr, quint16 port) : m_addr(QHostAddress(QHostAddress(addr).toIPv4Address()).toString()), m_port(port), m_roomName(addr.toString() + "'s room") {}
+    RoomProviderItem(const QString &addr, quint16 port) : m_addr(QHostAddress(QHostAddress(addr).toIPv4Address()).toString()), m_port(port), m_roomName(addr + "'s room") {}
 
     RoomProviderItem() {}
 
 signals:
     void roomNameChanged();
     void addressChanged();
+    void portChanged();
 
 protected:
     QString m_roomName;
@@ -84,10 +87,8 @@ class RoomService : public QObject
     Q_OBJECT
 
     Q_PROPERTY(bool roomCreated READ getRoomCreated WRITE setRoomCreated)
-
     Q_PROPERTY(QQmlListProperty<RoomProviderItem> roomItems READ getRoomItems NOTIFY roomItemsChanged)
     // NOTIFY elementsChanged
-
     Q_PROPERTY(QQmlListProperty<RoomUserItem> userItems READ getUserItems NOTIFY userItemsChanged)
 
 public:
@@ -110,7 +111,7 @@ public:
     {
 
         m_roomItems.append(new RoomProviderItem("127.0.0.1", 5556));
-        m_roomItems.append(new RoomProviderItem("192.168.1.1", 5557));
+        m_roomItems.append(new RoomProviderItem("192.168.123.30", 12345));
 
         m_userItems.append(new RoomUserItem{"房主"});
 
@@ -131,7 +132,7 @@ public:
 
         obj.insert("type", "room");
         obj.insert("ip", backendSync->localAddress());
-        obj.insert("port", 21817);
+        obj.insert("port", 12345);
         backendSync->boardcast(JsonToString(obj), 21817);
 
         if (backendSync->initWSServer())
@@ -149,8 +150,9 @@ public:
     }
 
     //加入房间操作
-    Q_INVOKABLE bool joinRoom()
+    Q_INVOKABLE bool joinRoom(const QString& ip, quint16 port)
     {
+        qInfo() << ip << port;
         //可能需要权限..所以可能需要弄个状态机..这里默认不弄权限了
         QJsonObject obj;
         obj.insert("type", "room");
@@ -162,7 +164,7 @@ public:
         connect(backendSync, &BackendSync::stateChanged, &eventLoop, &QEventLoop::quit);
 
         //异步初始化 并连接
-        backendSync->initWSClient("192.168.123.243", 12345);
+        backendSync->initWSClient(ip, port);
         qInfo() << "exec state:" << backendSync->WSState();
         eventLoop.exec();
         qInfo() << "quit state:" << backendSync->WSState();
@@ -231,8 +233,9 @@ protected slots:
         //需要增加维护列表的函数 不允许重复添加房间..而且需要定时器维护，定时删除可能关掉的房间?(因为当前没加入)
         if (obj.contains("type") && obj["type"] == "room")
         {
-            qInfo() << QString("[%1:%2] room boardcast.").arg(addr.toString()).arg(port).toStdString().c_str();
-            addRoomItem(new RoomProviderItem{addr.toString(), port});
+            qInfo() << QString("[%1:%2] room udp boardcast.").arg(addr.toString()).arg(port).toStdString().c_str();
+            //这里添加的是ws地址 不是udp地址(地址ip一样) 端口一定要注意
+            addRoomItem(new RoomProviderItem{addr.toString(), static_cast<quint16>(obj["port"].toInt())});
         }
     }
 

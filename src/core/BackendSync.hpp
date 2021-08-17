@@ -120,6 +120,7 @@ public:
         m_webSocket = new QWebSocket;
 
         QUrl url = QString("ws://%1:%2").arg(ip).arg(port);
+        qInfo() << "initWSClient" << url;
 
         //可能还需要区分一下来源 不然调用多次就connect了多次..
         connect(m_webSocket, &QWebSocket::connected, this, &BackendSync::onConnected);

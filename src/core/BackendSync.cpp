@@ -60,7 +60,8 @@ void BackendSync::onUdpReadyRead() {
         emit receivedMessage(addr, port, data);
     }else{
         //self
-        emit receivedMessage(addr, port, data);
+        qInfo() << "self data" << data;
+        //emit receivedMessage(addr, port, data);
     }
     
 }

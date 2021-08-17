@@ -63,7 +63,7 @@ ApplicationWindow {
                 text: qsTr("Page 1")
                 width: parent.width
                 onClicked: {
-                    stackView.push("Page1Form.ui.qml")
+                    stackView.push("PaintingBoard.qml")
                     drawer.close()
                 }
             }
