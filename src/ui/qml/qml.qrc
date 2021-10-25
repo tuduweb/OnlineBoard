@@ -11,7 +11,7 @@
         <file>icons/danger.png</file>
         <file>icons/wrong.png</file>
         <file>index.qml</file>
-        <file>PainterItem.qml</file>
+        <file>PaintingBoard.qml</file>
         <file>ColorPicker.qml</file>
         <file>flickresize.qml</file>
         <file>PainterTest.qml</file>

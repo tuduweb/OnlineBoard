@@ -42,9 +42,9 @@
     </message>
 </context>
 <context>
-    <name>PainterItem</name>
+    <name>PaintingBoard</name>
     <message>
-        <location filename="../src/ui/qml/PainterItem.qml" line="11"/>
+        <location filename="../src/ui/qml/PaintingBoard.qml" line="11"/>
         <source>Painter Board</source>
         <translation type="unfinished"></translation>
     </message>
