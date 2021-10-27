@@ -44,6 +44,9 @@ include(cmake/components/obc-ui-qml.cmake)
 #### base & core
 include(cmake/components/obc-base.cmake)
 
+#### 3rdparty
+### include(3rdparty/spdlog/QJsonStruct.cmake)
+add_subdirectory(3rdparty/spdlog/)
 
 set(TS_FILES translations/OnlineBoard_zh_CN.ts)
 
@@ -102,3 +105,7 @@ if(QT_VERSION_MAJOR EQUAL 6)
     qt_import_qml_plugins(OnlineBoard)
     qt_finalize_executable(OnlineBoard)
 endif()
+
+
+# 项目中使用第三方库, spdlog
+target_link_libraries(OnlineBoard PRIVATE spdlog::spdlog)
